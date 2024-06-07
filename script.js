@@ -12,58 +12,86 @@ const tasks = [
   { title: "Assistir a um documentário interessante", type: "Normal" },
 ];
 
-
 function createTaskItem(task) {
-  
   const liElement = document.createElement('li');
   const divContainer = document.createElement('div');
   const spanElement = document.createElement('span');
   const pElement = document.createElement('p');
-  spanElement.innerText = 'sd'
   const buttonElement = document.createElement('button');
 
   liElement.classList.add('task__item');
   divContainer.classList.add('task-info__container');
   spanElement.classList.add('task-type');
+  
+
+
+  spanElement.innerText = ''; 
+
   pElement.textContent = task.title;
   buttonElement.classList.add('task__button--remove-task');
-  
-
-  
-  if(task.type === 'Urgente'){
-    spanElement.classList.add('span-urgent')
-  } else if(task.type === 'Importante'){
+   
+console.log(task.type);
+  if (task.type === 'Urgente') {
+    spanElement.classList.add('span-urgent');
+    
+  } else if (task.type === 'Importante') {
     spanElement.classList.add('span-important');
-  } else if (task.type === 'Normal'){
-    spanElement.classList.add('span-normal')
+    divContainer.appendChild(spanElement)
+  } else if (task.type === 'Normal') {
+    spanElement.classList.add('span-normal');
+    divContainer.appendChild(spanElement)
   }
 
-  
-  
+
+  buttonElement.addEventListener('click', () => {
+    const index = tasks.indexOf(task);
+    if (index > -1) {
+      tasks.splice(index, 1); 
+      renderElements(tasks);  
+    }
+  });
+
   divContainer.appendChild(spanElement);
-  divContainer.appendChild(pElement);
+  
+  divContainer.appendChild(pElement); 
   divContainer.appendChild(buttonElement);
   liElement.appendChild(divContainer);
-  //liElement.appendChild(buttonElement);
 
-  
   return liElement;
 }
 
-
 function renderElements(tasks) {
-  
-  const ulElement = document.querySelector('ul'); 
+  const ulElement = document.querySelector('ul');
 
-  
+  ulElement.innerHTML = ''; 
 
-  // Itera sobre o array de tarefas e adiciona cada item ao <ul>  
   tasks.forEach(task => {
     const taskItem = createTaskItem(task);
     ulElement.appendChild(taskItem);
-  });  
-  
+  });
 }
+
+
+document.querySelector('.form__button--add-task').addEventListener('click', (event) => {
+  event.preventDefault(); 
+
+  const taskTitle = document.getElementById('input_title').value;
+  const taskType = document.querySelector('.form__input--priority').value;
+
+  if (taskTitle.trim() === "" || taskType === "") {
+    alert("O título da tarefa e o tipo não podem estar vazios.");
+    return;
+  }
+
+  const newTask = { title: taskTitle, type: taskType }; 
+
+  tasks.push(newTask);
+
+  renderElements(tasks);
+
+  document.getElementById('input_title').value = '';
+  document.querySelector('.form__input--priority').value = '';
+});
 
 
 renderElements(tasks);
